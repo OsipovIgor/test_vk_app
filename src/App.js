@@ -13,7 +13,17 @@ const App = () => {
 		bridge.send('VKWebAppGetGeodata').then(response => {
 			setLat(response.lat);
 			setLng(response.long);
-		})
+		});
+
+		bridge.send('VKWebAppGetAuthToken', { "app_id": 7581800, "scope": "friends,status" } ).then(response => {
+			const { access_token, scope } = response;
+			console.log('access_token', access_token);
+			bridge.send('VKWebAppCallAPIMethod', { method: 'friends.getOnline', params: { access_token, v: '5.60' }})
+				.then(response => {
+					console.log('friends.getOnline: ', response);
+				}).catch(console.log)
+
+		}).catch(console.error)
 	}, []);
 
 	return (
